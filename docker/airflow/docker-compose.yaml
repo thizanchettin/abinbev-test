@@ -1,0 +1,15 @@
+services:
+  airflow:
+    build:
+      context: ../..
+      dockerfile: docker/airflow/Dockerfile
+    container_name: airflow
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../../dags:/opt/airflow/dags
+    command: >
+      bash -c "airflow db init && airflow scheduler & airflow webserver"

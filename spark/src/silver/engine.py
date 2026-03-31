@@ -1,20 +1,21 @@
+from pyspark.sql.functions import col, trim
+from pyspark.sql.types import StringType
 from src.bronze.schema import get_brewery_schema
-from src.utils.client import fetch_breweries
 from src.utils.config import load_config
 from src.utils.logger import get_logger
 from src.utils.spark import create_spark
-from pyspark.sql.functions import trim, col
-from pyspark.sql.types import StringType
+
 
 def trim_string_columns(df):
-    return df.select([
-        trim(col(c)).alias(c) if isinstance(df.schema[c].dataType, StringType)
-        else col(c)
-        for c in df.columns
-    ])
+    return df.select(
+        [
+            trim(col(c)).alias(c) if isinstance(df.schema[c].dataType, StringType) else col(c)
+            for c in df.columns
+        ]
+    )
+
 
 def main():
-
     logger = get_logger("silver_engine")
 
     config = load_config()
@@ -35,14 +36,14 @@ def main():
     df = trim_string_columns(df)
 
     (
-        df.write
-        .format("delta")
+        df.write.format("delta")
         .mode("overwrite")
-        .partitionBy("country","state_province","city")
+        .partitionBy("country", "state_province", "city")
         .saveAsTable(config.silver.table)
     )
 
     logger.info("Finished transformations")
+
 
 if __name__ == "__main__":
     main()

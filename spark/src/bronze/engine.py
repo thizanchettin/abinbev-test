@@ -6,7 +6,6 @@ from src.utils.spark import create_spark
 
 
 def main():
-
     logger = get_logger("bronze_engine")
 
     config = load_config()
@@ -19,19 +18,14 @@ def main():
     logger.info(f"Writing to {config.bronze.table}")
 
     for batch, page in fetch_breweries():
-
         logger.info(f"Writing page {page}")
 
         df = spark.createDataFrame(batch, schema=schema)
 
-        (
-            df.write
-            .format(config.bronze.format)
-            .mode("append")
-            .saveAsTable(config.bronze.table)
-        )
+        (df.write.format(config.bronze.format).mode("append").saveAsTable(config.bronze.table))
 
     logger.info("Finished ingestion")
+
 
 if __name__ == "__main__":
     main()

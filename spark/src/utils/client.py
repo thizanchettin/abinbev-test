@@ -1,4 +1,5 @@
 import time
+
 import requests
 
 
@@ -7,9 +8,7 @@ def fetch_breweries(
     page=1,
     per_page=200,
 ):
-
     while True:
-
         response = requests.get(
             url,
             params={"page": page, "per_page": per_page},
