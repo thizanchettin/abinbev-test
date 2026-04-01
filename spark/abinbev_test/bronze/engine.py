@@ -1,8 +1,8 @@
-from bronze.schema import get_brewery_schema
-from utils.client import fetch_breweries
-from utils.config import load_config
-from utils.logger import get_logger
-from utils.spark import create_spark
+from abinbev_test.bronze.schema import get_brewery_schema
+from abinbev_test.utils.client import fetch_breweries
+from abinbev_test.utils.config import load_config
+from abinbev_test.utils.logger import get_logger
+from abinbev_test.utils.spark import create_spark
 
 
 def main():

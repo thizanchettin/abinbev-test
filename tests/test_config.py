@@ -1,4 +1,4 @@
-from src.utils.config import LayerConfig, PipelineConfig, load_config
+from abinbev_test.utils.config import LayerConfig, PipelineConfig, load_config
 
 
 def test_load_config_defaults():

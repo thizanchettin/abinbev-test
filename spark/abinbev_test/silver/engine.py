@@ -1,9 +1,10 @@
-from bronze.schema import get_brewery_schema
 from pyspark.sql.functions import col, trim
 from pyspark.sql.types import StringType
-from utils.config import load_config
-from utils.logger import get_logger
-from utils.spark import create_spark
+
+from abinbev_test.bronze.schema import get_brewery_schema
+from abinbev_test.utils.config import load_config
+from abinbev_test.utils.logger import get_logger
+from abinbev_test.utils.spark import create_spark
 
 
 def trim_string_columns(df):

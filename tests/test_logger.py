@@ -1,6 +1,6 @@
 import logging
 
-from src.utils.logger import get_logger
+from abinbev_test.utils.logger import get_logger
 
 
 def test_get_logger_returns_logger():

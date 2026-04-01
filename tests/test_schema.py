@@ -1,5 +1,5 @@
+from abinbev_test.bronze.schema import get_brewery_schema
 from pyspark.sql.types import DoubleType, StringType, StructType
-from src.bronze.schema import get_brewery_schema
 
 
 def test_get_brewery_schema_returns_struct_type():

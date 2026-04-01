@@ -13,6 +13,9 @@ dependencies = [
     "requests>=2.33.1",
 ]
 
+[project.scripts]
+main = "abinbev_test.runner:main"
+
 [tool.setuptools.packages.find]
 where = ["spark"]
 

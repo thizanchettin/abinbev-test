@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from src.utils.client import fetch_breweries
+from abinbev_test.utils.client import fetch_breweries
 
 
 def make_mock_response(data):
@@ -14,7 +14,10 @@ def make_mock_response(data):
 def test_fetch_breweries_yields_data():
     page1 = [{"id": "1", "name": "Brewery A"}]
 
-    with patch("utils.client.requests.get") as mock_get, patch("utils.client.time.sleep"):
+    with (
+        patch("abinbev_test.utils.client.requests.get") as mock_get,
+        patch("abinbev_test.utils.client.time.sleep"),
+    ):
         mock_get.side_effect = [
             make_mock_response(page1),
             make_mock_response([]),
@@ -30,7 +33,10 @@ def test_fetch_breweries_multiple_pages():
     page1 = [{"id": "1", "name": "Brewery A"}]
     page2 = [{"id": "2", "name": "Brewery B"}]
 
-    with patch("utils.client.requests.get") as mock_get, patch("utils.client.time.sleep"):
+    with (
+        patch("abinbev_test.utils.client.requests.get") as mock_get,
+        patch("abinbev_test.utils.client.time.sleep"),
+    ):
         mock_get.side_effect = [
             make_mock_response(page1),
             make_mock_response(page2),
@@ -45,7 +51,7 @@ def test_fetch_breweries_multiple_pages():
 
 
 def test_fetch_breweries_raises_on_http_error():
-    with patch("utils.client.requests.get") as mock_get:
+    with patch("abinbev_test.utils.client.requests.get") as mock_get:
         mock_get.return_value.raise_for_status.side_effect = Exception("HTTP Error")
 
         with pytest.raises(Exception, match="HTTP Error"):
@@ -53,7 +59,7 @@ def test_fetch_breweries_raises_on_http_error():
 
 
 def test_fetch_breweries_empty_first_page():
-    with patch("utils.client.requests.get") as mock_get:
+    with patch("abinbev_test.utils.client.requests.get") as mock_get:
         mock_get.return_value = make_mock_response([])
 
         results = list(fetch_breweries())
