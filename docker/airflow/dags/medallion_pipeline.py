@@ -9,7 +9,7 @@ from airflow.providers.databricks.operators.databricks import DatabricksRunNowOp
 from airflow.utils.task_group import TaskGroup
 
 DATABRICKS_CONN_ID = "databricks_default"
-JOB_NAME = "[dev tazsouza] runner-job-dev"
+JOB_NAME = "[dev service_principal] runner-job-dev"
 
 TELEGRAM_TOKEN = Variable.get("telegram_token", default_var="")
 TELEGRAM_CHAT_ID = Variable.get("telegram_chat_id", default_var="")
