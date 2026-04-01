@@ -44,10 +44,10 @@ select = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["spark/src"]
+pythonpath = ["spark"]
 
 [tool.coverage.run]
-source = ["spark/src"]
+source = ["abinbev_test"]
 omit = ["tests/*"]
 
 [tool.coverage.report]
