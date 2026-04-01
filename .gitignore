@@ -14,7 +14,6 @@ wheels/
 # Databricks files
 .databricks
 typings/
-databricks.yml
 
 # Airflow logs
 docker/airflow/logs/
