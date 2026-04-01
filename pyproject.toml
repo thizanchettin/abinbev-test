@@ -4,12 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "abinbev_test"
-version = "0.1.0"
+version = "0.2.0"
 description = "Test project for Ab InBev"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "pyspark>=4.1.1",
     "requests>=2.33.1",
 ]
 

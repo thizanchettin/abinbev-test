@@ -1,8 +1,8 @@
 import argparse
 
-from bronze.engine import main as bronze_main
-from gold.engine import main as gold_main
-from silver.engine import main as silver_main
+from abinbev_test.bronze.engine import main as bronze_main
+from abinbev_test.gold.engine import main as gold_main
+from abinbev_test.silver.engine import main as silver_main
 
 
 def main():
