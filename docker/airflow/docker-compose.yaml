@@ -1,15 +1,93 @@
+x-airflow-common:
+  &airflow-common
+  build:
+    context: ../..
+    dockerfile: docker/airflow/Dockerfile
+  env_file:
+    - .env
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
+    AIRFLOW__WEBSERVER__SECRET_KEY: 'airflow-secret-key-local'
+    # Credenciais admin
+    _AIRFLOW_WWW_USER_USERNAME: admin
+    _AIRFLOW_WWW_USER_PASSWORD: admin
+    # Connection do Databricks (lida do .env)
+    AIRFLOW_CONN_DATABRICKS_DEFAULT: "databricks://token:${DATABRICKS_TOKEN}@${DATABRICKS_HOST}"
+    # Airflow Variables
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+  user: "${AIRFLOW_UID:-50000}:0"
+  depends_on:
+    postgres:
+      condition: service_healthy
+
 services:
-  airflow:
-    build:
-      context: ../..
-      dockerfile: docker/airflow/Dockerfile
-    container_name: airflow
+  postgres:
+    image: postgres:13
     environment:
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+
+  airflow-init:
+    image: apache/airflow:2.10.4
+    environment:
+      <<: *airflow-common-env
+    user: "50000:0"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command:
+      - bash
+      - -c
+      - |
+        airflow db migrate && \
+        airflow users create \
+          --username admin \
+          --password admin \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com
+        airflow variables set telegram_token "${AIRFLOW__VARIABLES__TELEGRAM_TOKEN}" && \
+        airflow variables set telegram_chat_id "${AIRFLOW__VARIABLES__TELEGRAM_CHAT_ID}" && \
+        airflow variables set alert_email "${AIRFLOW__VARIABLES__ALERT_EMAIL}" && \
+        airflow connections add databricks_default \
+        --conn-type databricks \
+        --conn-host "${DATABRICKS_HOST}" \
+        --conn-password "${DATABRICKS_TOKEN}" || true
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
     ports:
       - "8080:8080"
-    volumes:
-      - ../../dags:/opt/airflow/dags
-    command: >
-      bash -c "airflow db init && airflow scheduler & airflow webserver"
+    restart: always
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    restart: always
+    depends_on:
+      airflow-init:
+        condition: service_completed_successfully
+
+volumes:
+  postgres-db-volume:

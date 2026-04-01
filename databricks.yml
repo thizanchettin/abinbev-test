@@ -1,19 +1,36 @@
-# This is a Databricks asset bundle definition for abinvev-test.
-# The Databricks extension requires databricks.yml configuration file.
-# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
-
 bundle:
-  name: abinvev-test
-
+  name: abinbev-pipeline   # NOME DO BUNDLE
+variables:
+  LAYER:
+    default: "bronze"
 targets:
   dev:
+    variables:
+      LAYER: bronze       # ← aqui definimos a variável: dev
     mode: development
     default: true
-    workspace:
-      host: https://dbc-8ff5037f-46f1.cloud.databricks.com
+resources:
+  jobs:
+    runner_job:
+      name: runner-job-${bundle.target}
 
-  ## Optionally, there could be 'staging' or 'prod' targets here.
-  #
-  # prod:
-  #   workspace:
-  #     host: https://dbc-8ff5037f-46f1.cloud.databricks.com
+      tasks:
+        - task_key: run
+
+          python_wheel_task:
+            package_name: abinbev_test
+            entry_point: runner:main
+
+            parameters:
+              - "--layer"
+              - "${variables.LAYER}"
+
+          environment_key: default
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "2"
+
+            dependencies:
+              - ./dist/*.whl

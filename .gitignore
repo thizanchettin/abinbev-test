@@ -5,11 +5,16 @@ build/
 dist/
 wheels/
 *.egg-info
+.coverage
 
 # Virtual environments
 .venv
+.env
 
+# Databricks files
 .databricks
 typings/
 databricks.yml
 
+# Airflow logs
+docker/airflow/logs/

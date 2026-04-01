@@ -1,7 +1,11 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "spark"
+name = "abinbev_test"
 version = "0.1.0"
-description = "Add your description here"
+description = "Test project for Ab InBev"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -9,16 +13,41 @@ dependencies = [
     "requests>=2.33.1",
 ]
 
+[tool.setuptools.packages.find]
+where = ["spark"]
+
 [dependency-groups]
 dev = [
+    "build>=1.4.2",
     "pre-commit>=4.5.1",
+    "pyspark>=4.1.1",
     "pytest>=9.0.2",
+    "pytest-cov>=6.0.0",
     "ruff>=0.15.8",
 ]
 
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py311"
 
 [tool.ruff.lint]
-select = ["E", "F", "I"]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "W",   # pycodestyle warnings
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["spark/src"]
+
+[tool.coverage.run]
+source = ["spark/src"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+fail_under = 80  # falha se cobertura < 80%
+show_missing = true

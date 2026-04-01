@@ -1,7 +1,7 @@
 from pyspark.sql import functions as F
-from src.utils.config import load_config
-from src.utils.logger import get_logger
-from src.utils.spark import create_spark
+from utils.config import load_config
+from utils.logger import get_logger
+from utils.spark import create_spark
 
 
 def main():

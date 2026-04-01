@@ -1,8 +1,8 @@
-from src.bronze.schema import get_brewery_schema
-from src.utils.client import fetch_breweries
-from src.utils.config import load_config
-from src.utils.logger import get_logger
-from src.utils.spark import create_spark
+from bronze.schema import get_brewery_schema
+from utils.client import fetch_breweries
+from utils.config import load_config
+from utils.logger import get_logger
+from utils.spark import create_spark
 
 
 def main():
